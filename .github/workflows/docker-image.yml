@@ -1,0 +1,24 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Build the Docker image
+      run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+    - uses: actions/checkout@v2
+    - name: Build the Docker image
+      run: |
+        echo "dckr_pat_i4HThebGy8pxWA0S0NBFVnjkDTE" | docker login -u "dekleor" --password-stdin docker.io
+        docker build . --file Dockerfile --tag docker.io/dekleor/psitest:$GITHUB_SHA
+        docker push docker.io/dekleor/psitest:$GITHUB_SHA
