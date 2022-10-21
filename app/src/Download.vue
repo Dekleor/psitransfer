@@ -17,12 +17,14 @@
       button.decrypt.btn.btn-primary(:disabled='password.length<1', @click='fetchBucket()')
         icon.fa-fw(name="key")
         |  {{ $root.lang.decrypt }}
-    .panel.panel-primary(v-if='!needsPassword')
+    .panel.panel-primary(v-if='!needsPassword && loading')
       .panel-heading
         strong {{ $root.lang.files }}
-        div.pull-right.btn-group.btn-download-archive(v-if='loading')
-            h3 {{ $root.lang.ongoingDownload }}
-        div.pull-right.btn-group.btn-download-archive(v-else)        
+          h3 {{ $root.lang.ongoingDownload }}
+    .panel.panel-primary(v-if='!needspassword && !loading')
+      .panel-heading
+        strong {{ $root.lang.files }}
+          div.pull-right.btn-group.btn-download-archive
             a.btn.btn-sm.btn-default(@click="downloadAll('zip')", :title="$root.lang.zipDownload")
               icon.fa-fw(name="download")
               |  zip
