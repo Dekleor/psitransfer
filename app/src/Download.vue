@@ -1,62 +1,59 @@
 <template lang="pug">
-  .download-app
-    a.btn.btn-sm.btn-info.btn-new-session(@click='newSession()', :title='$root.lang.newUpload')
-      icon.fa-fw(name="cloud-upload-alt")
-      span.hidden-xs  {{ $root.lang.newUpload }}
-    .alert.alert-danger(v-show="error")
-      strong
-        icon.fa-fw(name="exclamation-triangle")
-        |  {{ error }}
-    .well(v-if='needsPassword')
-      h3 {{ $root.lang.password }}
-      .form-group
-        input.form-control(type='password', v-model='password')
-      p.text-danger(v-show='passwordWrong')
-        strong {{ $root.lang.accessDenied }}
-      |
-      button.decrypt.btn.btn-primary(:disabled='password.length<1', @click='fetchBucket()')
-        icon.fa-fw(name="key")
-        |  {{ $root.lang.decrypt }}
-    .panel.panel-primary(v-if='!needsPassword && !loading')
-      .panel-heading
-        strong {{ $root.lang.files }}
-        div.pull-right.btn-group.btn-download-archive(v-if="downloadsAvailable")
-          a.btn.btn-sm.btn-default(@click="downloadAll('zip')", :title="$root.lang.zipDownload")
-            icon.fa-fw(name="download")
-            |  zip
-          a.btn.btn-sm.btn-default(@click="downloadAll('tar.gz')", :title="$root.lang.tarGzDownload")
-            icon.fa-fw(name="download")
-            |  tar.gz
-      .panel-body
-        table.table.table-hover.table-striped.files
-          tbody
-            tr(v-for='file in files', style='cursor: pointer', @click='download(file)')
-              td.file-icon
-                file-icon(:file='file')
-              td
-                div.pull-right.btn-group
-                  clipboard.btn.btn-sm.btn-default(:value='baseURI + file.url', @change='copied(file, $event)', :title='$root.lang.copyToClipboard')
-                    a
-                      icon(name="copy")
-                  a.btn.btn-sm.btn-default(:title="$root.lang.preview", @click.prevent.stop="preview=file", v-if="file.previewType")
-                    icon(name="eye")
-                i.pull-right.fa.fa-check.text-success.downloaded(v-show='file.downloaded')
-                p
-                  strong {{ file.metadata.name }}
-                  small.file-size(v-if="isFinite(file.size)") ({{ humanFileSize(file.size) }})
-                p {{ file.metadata.comment }}
+    .download-app
+      a.btn.btn-sm.btn-info.btn-new-session(@click='newSession()', :title='$root.lang.newUpload')
+        icon.fa-fw(name="cloud-upload-alt")
+        span.hidden-xs  {{ $root.lang.newUpload }}
+      .alert.alert-danger(v-show="error")
+        strong
+          icon.fa-fw(name="exclamation-triangle")
+          |  {{ error }}
+      .well(v-if='needsPassword')
+        h3 {{ $root.lang.password }}
+        .form-group
+          input.form-control(type='password', v-model='password')
+        p.text-danger(v-show='passwordWrong')
+          strong {{ $root.lang.accessDenied }}
+        |
+        button.decrypt.btn.btn-primary(:disabled='password.length<1', @click='fetchBucket()' )
+          icon.fa-fw(name="key" )
+            | {{ $root.lang.decrypt }}
+      .panel.panel-primary(v-if='!needsPassword && !loading' )
+        .panel-heading
+          strong {{ $root.lang.files }}
+          div.pull-right.btn-group.btn-download-archive(v-if="downloadsAvailable" )
+            a.btn.btn-sm.btn-default(@click="downloadAll('zip')" , :title="$root.lang.zipDownload" )
+              icon.fa-fw(name="download" )
+              | zip
+            a.btn.btn-sm.btn-default(@click="downloadAll('tar.gz')" , :title="$root.lang.tarGzDownload" )
+              icon.fa-fw(name="download" )
+              | tar.gz
+        .panel-body
+          table.table.table-hover.table-striped.files
+            tbody
+              tr(v-for='file in files' , style='cursor: pointer' , @click='download(file)' )
+                td.file-icon
+                  file-icon(:file='file' )
+                td
+                  div.pull-right.btn-group
+                    clipboard.btn.btn-sm.btn-default(:value='baseURI + file.url' , @change='copied(file, $event)' , :title='$root.lang.copyToClipboard' )
+                      a
+                        icon(name="copy" )
+                    a.btn.btn-sm.btn-default(:title="$root.lang.preview" , @click.prevent.stop="preview=file" , v-if="file.previewType" )
+                      icon(name="eye" )
+                  i.pull-right.fa.fa-check.text-success.downloaded(v-show='file.downloaded' )
+                  p
+                    strong {{ file.metadata.name }}
+                    small.file-size(v-if="isFinite(file.size)" ) ({{ humanFileSize(file.size) }})
+                  p {{ file.metadata.comment }}
 
-    preview-modal(:preview="preview", :files="previewFiles", :max-size="config.maxPreviewSize", @close="preview=false")
-     
+        preview-modal(:preview="preview" , :files="previewFiles" , :max-size="config.maxPreviewSize" , @close="preview=false" )
+
 </template>
 
 
 <script>
   "use strict";
   import MD5 from 'crypto-js/md5';
-
-  import Settings from './Upload/Settings.vue';
-  import Files from './Upload/Files.vue';
 
   import FileIcon from './common/FileIcon.vue';
   import Clipboard from './common/Clipboard.vue';
@@ -71,12 +68,12 @@
   import 'vue-awesome/icons/eye';
 
   function getPreviewType(file, maxSize) {
-    if(!file || !file.metadata) return false;
-    if(file.metadata.retention === 'one-time') return false;
+    if (!file || !file.metadata) return false;
+    if (file.metadata.retention === 'one-time') return false;
     // no preview for files size > 2MB
-    if(file.size > maxSize) return false;
-    if(file.metadata.type && file.metadata.type.match(/^image\/.*/)) return 'image';
-    else if(file.metadata.type && file.metadata.type.match(/(text\/|xml|json|javascript|x-sh)/)
+    if (file.size > maxSize) return false;
+    if (file.metadata.type && file.metadata.type.match(/^image\/.*/)) return 'image';
+    else if (file.metadata.type && file.metadata.type.match(/(text\/|xml|json|javascript|x-sh)/)
       || file.metadata.name && file.metadata.name
         .match(/\.(jsx|vue|sh|pug|less|scss|sass|c|h|conf|log|bat|cmd|lua|class|java|py|php|yml|sql|md)$/)) {
       return 'text';
@@ -87,7 +84,7 @@
   export default {
     name: 'app',
     components: { FileIcon, Clipboard, PreviewModal },
-    data () {
+    data() {
       return {
         files: [],
         sid: document.location.pathname.match(/^.*\/([^\/?#]+)/)[1],
@@ -104,22 +101,18 @@
     },
 
     computed: {
-      downloadsAvailable: function() {
+      downloadsAvailable: function () {
         return this.files.filter(f => !f.downloaded || f.metadata.retention !== 'one-time').length > 0
       },
-      previewFiles: function() {
+      previewFiles: function () {
         return this.files.filter(f => !!f.previewType);
-      },
-      ...mapState(['state']),
-      ...mapState('config', ['uploadPassRequired', 'uploadPass', 'requireBucketPassword']),
-      ...mapState('upload', ['sid', 'files', 'password']),
-      ...mapGetters(['error', 'disabled']),
-      ...mapGetters('upload', ['percentUploaded', 'shareUrl', 'bucketSize', 'bytesUploaded']),
+      }
+
     },
 
     methods: {
       download(file) {
-        if(file.downloaded && file.metadata.retention === 'one-time') {
+        if (file.downloaded && file.metadata.retention === 'one-time') {
           alert(this.$root.lang.oneTimeDownloadExpired);
           return;
         }
@@ -158,7 +151,7 @@
           fileSizeInBytes = fileSizeInBytes / 1024;
           i++;
         }
-        while(fileSizeInBytes > 1024);
+        while (fileSizeInBytes > 1024);
         return Math.max(fileSizeInBytes, 0.01).toFixed(2) + byteUnits[i];
       },
 
@@ -167,14 +160,14 @@
       },
 
       isFinite(value) {
-        if(typeof value !== 'number') return false;
+        if (typeof value !== 'number') return false;
         return !(value !== value || value === Infinity || value === -Infinity);
       },
 
       fetchBucket() {
         const xhr = new XMLHttpRequest();
         xhr.open('GET', this.sid + '.json');
-        if(this.password) {
+        if (this.password) {
           xhr.setRequestHeader('x-download-pass', this.password);
         }
         xhr.onload = () => {
@@ -195,14 +188,14 @@
               this.error = e.toString();
             }
           } else if (xhr.status === 401) {
-            if(this.needsPassword) {
+            if (this.needsPassword) {
               this.passwordWrong = true;
             } else {
               this.needsPassword = true;
             }
             this.loading = false;
           } else {
-            this.error = `${ xhr.status } ${ xhr.statusText }: ${ xhr.responseText }`;
+            this.error = `${xhr.status} ${xhr.statusText}: ${xhr.responseText}`;
           }
         };
         xhr.send();
