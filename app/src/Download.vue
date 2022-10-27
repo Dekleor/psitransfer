@@ -20,7 +20,7 @@
     .panel.panel-primary
       .panel-heading
         strong {{ $root.lang.files }}
-           h3 {{ $root.lang.ongoingDownload }}toto
+           span.h3 {{ $root.lang.ongoingDownload }}toto
            span.title(v-show="state === 'uploading'") {{ $root.lang.ongoingDownload }}
           
 </template>
