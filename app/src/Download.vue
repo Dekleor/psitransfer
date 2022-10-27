@@ -1,22 +1,23 @@
 <template lang="pug">
   .download-app
-    a.btn.btn-sm.btn-info.btn-new-session(@click='newSession()', :title='$root.lang.newUpload')
-      icon.fa-fw(name="cloud-upload-alt")
-      span.hidden-xs  {{ $root.lang.newUpload }}
-    .alert.alert-danger(v-show="error")
-      strong
-      icon.fa-fw(name="exclamation-triangle")
-      |  {{ error }}
-    .well(v-if='needsPassword')
-      h3 {{ $root.lang.password }}
-      .form-group
-        input.form-control(type='password', v-model='password')
-      p.text-danger(v-show='passwordWrong')
-        strong {{ $root.lang.accessDenied }}
-      |
-      button.decrypt.btn.btn-primary(:disabled='password.length<1', @click='fetchBucket()' )
-        icon.fa-fw(name="key" )
-        | {{ $root.lang.decrypt }}
+  a.btn.btn-sm.btn-info.btn-new-session(@click='newSession()', :title='$root.lang.newUpload')
+  icon.fa-fw(name="cloud-upload-alt")
+  span.hidden-xs  {{ $root.lang.newUpload }}
+  .alert.alert-danger(v-show="error")
+  strong
+  icon.fa-fw(name="exclamation-triangle")
+  |  {{ error }}
+  .well(v-if='needsPassword')
+  h3 {{ $root.lang.password }}
+  .form-group
+  input.form-control(type='password', v-model='password')
+  p.text-danger(v-show='passwordWrong')
+  strong {{ $root.lang.accessDenied }}
+  |
+  button.decrypt.btn.btn-primary(:disabled='password.length
+  <1', @click='fetchBucket()' )
+       icon.fa-fw(name="key" )
+       | {{ $root.lang.decrypt }}
        .panel.panel-primary(v-if='!needsPassword && !loading' )
        .panel-heading
        strong {{ $root.lang.files }}
