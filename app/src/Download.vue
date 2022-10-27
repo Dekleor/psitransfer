@@ -17,13 +17,36 @@
       button.decrypt.btn.btn-primary(:disabled='password.length<1', @click='fetchBucket()')
         icon.fa-fw(name="key")
         |  {{ $root.lang.decrypt }}
-    .panel.panel-primary
+     .panel.panel-primary(v-else='!needspassword && !loading')
       .panel-heading
         strong {{ $root.lang.files }}
-        |
-        span.h3 {{ $root.lang.downloadLink }}toto
-        span.title(v-show="state === 'uploading'") {{ $root.lang.downloadLink }}
-          
+          div.pull-right.btn-group.btn-download-archive
+            a.btn.btn-sm.btn-default(@click="downloadAll('zip')", :title="$root.lang.zipDownload")
+            icon.fa-fw(name="download")
+            |  zip
+            a.btn.btn-sm.btn-default(@click="downloadAll('tar.gz')", :title="$root.lang.tarGzDownload")
+            icon.fa-fw(name="download")
+            |  tar.gz
+     .panel-body
+        table.table.table-hover.table-striped.files
+          tbody
+            tr(v-for='file in files', style='cursor: pointer', @click='download(file)')
+              td.file-icon
+                file-icon(:file='file')
+              td
+                div.pull-right.btn-group
+                  clipboard.btn.btn-sm.btn-default(:value='baseURI + file.url', @change='copied(file, $event)', :title='$root.lang.copyToClipboard')
+                    a
+                      icon(name="copy")
+                  a.btn.btn-sm.btn-default(:title="$root.lang.preview", @click.prevent.stop="preview=file", v-if="file.previewType")
+                    icon(name="eye")
+                i.pull-right.fa.fa-check.text-success.downloaded(v-show='file.downloaded')
+                p
+                  strong {{ file.metadata.name }}
+                  small.file-size(v-if="isFinite(file.size)") ({{ humanFileSize(file.size) }})
+                p {{ file.metadata.comment }}
+
+      preview-modal(:preview="preview", :files="previewFiles", :max-size="config.maxPreviewSize", @close="preview=false")     
 </template>
 
 
