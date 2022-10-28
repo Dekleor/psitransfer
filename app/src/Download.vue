@@ -31,8 +31,9 @@
           table.table.table-hover.table-striped.files
             tbody
               template(v-if="file.downloaded == false")
-                td
-                  strong {{ $root.lang.ongoingDownload }}
+                tr
+                  td
+                    strong {{ $root.lang.ongoingDownload }}
               template(v-else)
                 tr(v-for='file in files' , style='cursor: pointer' , @click='download(file)' )
                   td.file-icon
