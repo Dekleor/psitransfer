@@ -31,10 +31,10 @@
           table.table.table-hover.table-striped.files
             tbody
               tr(v-for='file in files' , style='cursor: pointer' , @click='download(file)' )
-                template(v-if="humanFileSize(file.size) != file.metadata.size")
+                template(v-if="humanFileSize(file.size) != file.size")
                   td
                     strong {{ $root.lang.ongoingDownload }}
-                template(v-else="humanFileSize(file.size) == file.metadata.size")
+                template(v-else="humanFileSize(file.size) == file.size")
                 td.file-icon
                   file-icon(:file='file' )
                 td
