@@ -31,9 +31,9 @@
           table.table.table-hover.table-striped.files
             tbody
               tr(v-for='file in files' , style='cursor: pointer' , @click='download(file)' )
-                td(v-show="loading == true")
+                td(v-if="loading == true")
                   strong {{ $root.lang.ongoingDownload }}
-                td.file-icon
+                td.file-icon(v-else="")
                   file-icon(:file='file' )
                 td
                   div.pull-right.btn-group
