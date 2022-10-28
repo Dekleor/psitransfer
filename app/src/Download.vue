@@ -44,6 +44,8 @@
                           icon(name="copy" )
                       a.btn.btn-sm.btn-default(:title="$root.lang.preview" , @click.prevent.stop="preview=file" , v-if="file.previewType" )
                         icon(name="eye" )
+                      a.btn.btn-sm.btn-default(:title="$root.lang.download")
+                        icon(name="download")
                     i.pull-right.fa.fa-check.text-success.downloaded(v-show='file.downloaded' )
                     p
                       strong {{ file.metadata.name }}
