@@ -31,7 +31,7 @@
           table.table.table-hover.table-striped.files
             tbody
               tr(v-for='file in files' , style='cursor: pointer' , @click='download(file)' )
-                td(v-if="loading == true")
+                td(v-if=" file.downloaded == false")
                   strong {{ $root.lang.ongoingDownload }}
                 td.file-icon(v-else="")
                   file-icon(:file='file' )
