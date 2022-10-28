@@ -30,26 +30,25 @@
         .panel-body
           table.table.table-hover.table-striped.files
             tbody
-              template(v-if="file.downloaded == false")
-                tr
+              tr(v-for='file in files' , style='cursor: pointer' , @click='download(file)' )
+                template(v-if="!file.downloaded")
                   td
                     strong {{ $root.lang.ongoingDownload }}
-              template(v-else)
-                tr(v-for='file in files' , style='cursor: pointer' , @click='download(file)' )
-                  td.file-icon
-                    file-icon(:file='file' )
-                  td
-                    div.pull-right.btn-group
-                      clipboard.btn.btn-sm.btn-default(:value='baseURI + file.url' , @change='copied(file, $event)' , :title='$root.lang.copyToClipboard' )
-                        a
-                          icon(name="copy" )
-                      a.btn.btn-sm.btn-default(:title="$root.lang.preview" , @click.prevent.stop="preview=file" , v-if="file.previewType" )
-                        icon(name="eye" )
-                    i.pull-right.fa.fa-check.text-success.downloaded(v-show='file.downloaded' )
-                    p
-                      strong {{ file.metadata.name }}
-                      small.file-size(v-if="isFinite(file.size)" ) ({{ humanFileSize(file.size) }})
-                    p {{ file.metadata.comment }}
+                template(v-else="file.downloaded")
+                td.file-icon
+                  file-icon(:file='file' )
+                td
+                  div.pull-right.btn-group
+                    clipboard.btn.btn-sm.btn-default(:value='baseURI + file.url' , @change='copied(file, $event)' , :title='$root.lang.copyToClipboard' )
+                      a
+                        icon(name="copy" )
+                    a.btn.btn-sm.btn-default(:title="$root.lang.preview" , @click.prevent.stop="preview=file" , v-if="file.previewType" )
+                      icon(name="eye" )
+                  i.pull-right.fa.fa-check.text-success.downloaded(v-show='file.downloaded' )
+                  p
+                    strong {{ file.metadata.name }}
+                    small.file-size(v-if="isFinite(file.size)" ) ({{ humanFileSize(file.size) }})
+                  p {{ file.metadata.comment }}
 
         preview-modal(:preview="preview" , :files="previewFiles" , :max-size="config.maxPreviewSize" , @close="preview=false" )
 
