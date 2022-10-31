@@ -16,7 +16,7 @@
       |
       button.btn.btn-primary(type="submit", :disabled="!password")
         icon.fa-fw(name="sign-in-alt")
-        |  login
+        |  Login
 
     div(v-if="loggedIn")
       table.table.table-hover
@@ -47,7 +47,7 @@
                   icon(name="folder-open")
                 |
                 a.text-danger(@click="deleteFile(sid, '', true)", title="Delete bucket")
-                  icon(name"trash")
+                  icon(name="trash")
           tbody.expanded(v-if="expand === sid")
             template(v-for="file in bucket")
               tr.file
@@ -61,13 +61,13 @@
                   template(v-else) {{ file.expireDate }}
                 td.text-right {{ humanFileSize(file.size) }}
                 td
-                  a.text-danger(@click="deleteFile(file.metadata.sid, file.metadata.key)", title ="Delete file")
+                  a.text-danger(@click="deleteFile(file.metadata.sid, file.metadata.key)", title="Delete file")
                     icon(name="trash")
-        tfoot
-          tr
-            td(colspan="3")
-            td.text-right(colspan="2") Sum: {{ humanFileSize(sizeSum) }}
-            td
+          tfoot
+            tr
+              td(colspan="3")
+              td.text-right(colspan="2") Sum: {{ humanFileSize(sizeSum) }}
+              td
 
 </template>
 
@@ -77,14 +77,13 @@
   import 'vue-awesome/icons/sync-alt';
   import 'vue-awesome/icons/sign-in-alt';
   import 'vue-awesome/icons/key';
-  import 'vue-awasome/icons/folder_open';
+  import 'vue-awesome/icons/folder-open';
   import 'vue-awesome/icons/trash';
-
 
   export default {
     name: 'app',
 
-    data () {
+    data() {
       return {
         baseURI: this.$root.baseURI,
         db: {},
@@ -100,17 +99,17 @@
 
     methods: {
       expandView(sid) {
-        if(this.expand === sid) return this.expand = false;
+        if (this.expand === sid) return this.expand = false;
         this.expand = sid;
       },
 
       login() {
-        if(!this.password) return;
+        if (!this.password) return;
         const xhr = new XMLHttpRequest();
         xhr.open('GET', 'admin/data.json');
         xhr.setRequestHeader("x-passwd", this.password);
         xhr.onload = () => {
-          if(xhr.status === 200) {
+          if (xhr.status === 200) {
             try {
               this.db = JSON.parse(xhr.responseText);
               this.loggedIn = true;
@@ -118,11 +117,11 @@
               this.passwordWrong = false;
               this.expandDb();
             }
-            catch(e) {
+            catch (e) {
               this.error = e.toString();
             }
           } else {
-            if(xhr.status === 403) this.passwordWrong = true;
+            if (xhr.status === 403) this.passwordWrong = true;
             else this.error = `${xhr.status} ${xhr.statusText}: ${xhr.responseText}`;
           }
         };
@@ -141,22 +140,22 @@
           };
           this.db[sid].forEach(file => {
             bucketSum.size += file.size;
-            if(file.metadata._password) {
+            if (file.metadata._password) {
               bucketSum.password = true;
             }
-            if(+file.metadata.createdAt < bucketSum.created) {
+            if (+file.metadata.createdAt < bucketSum.created) {
               bucketSum.created = +file.metadata.createdAt;
             }
-            if(file.metadata.lastDownload && +file.metadata.lastDownload > bucketSum.lastDownload) {
+            if (file.metadata.lastDownload && +file.metadata.lastDownload > bucketSum.lastDownload) {
               bucketSum.lastDownload = +file.metadata.lastDownload;
             }
-            if(file.metadata.retention === 'one-time') {
+            if (file.metadata.retention === 'one-time') {
               bucketSum.firstExpire = 'one-time';
               file.expireDate = file.metadata.retention;
             }
             else {
               file.expireDate = +file.metadata.createdAt + (+file.metadata.retention * 1000);
-              if(bucketSum.firstExpire > file.expireDate) bucketSum.firstExpire = file.expireDate;
+              if (bucketSum.firstExpire > file.expireDate) bucketSum.firstExpire = file.expireDate;
             }
           });
           this.sizeSum += bucketSum.size;
@@ -170,7 +169,7 @@
         do {
           fileSizeInBytes = fileSizeInBytes / 1024;
           i++;
-        } while(fileSizeInBytes > 1024);
+        } while (fileSizeInBytes > 1024);
         return Math.max(fileSizeInBytes, 0.00).toFixed(2) + byteUnits[i];
       },
 
@@ -179,7 +178,7 @@
         xhr.open('DELETE', this.$root.baseURI + 'delete');
         xhr.setRequestHeader('Content-Type', 'application/json');
         xhr.setRequestHeader('x-passwd', this.password);
-        xhr.send(JSON.stringify({ sid, 'key': key, 'bucketDelete': bucketDelete }));
+        xhr.send(JSON.stringify({ 'sid': sid, 'key': key, 'bucketDelete': bucketDelete }));
         xhr.onload = () => {
           if (xhr.status === 200) {
             try {
@@ -193,8 +192,6 @@
         };
       },
     },
-
-
   }
 </script>
 
@@ -202,12 +199,15 @@
   .bucket {
     cursor: pointer;
   }
+
   .expanded {
     background: #fafafa;
   }
-  .expanded .bucket td {
-    font-weight: bold;
-  }
+
+    .expanded .bucket td {
+      font-weight: bold;
+    }
+
   tfoot {
     font-weight: bold;
   }
