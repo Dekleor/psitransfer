@@ -175,12 +175,13 @@
 
       deleteFile(sid, key, bucketDelete = false) {
         const xhr = new XMLHttpRequest();
+        var result = confirm("Confirm deletion");
         xhr.open('DELETE', this.$root.baseURI + 'delete');
         xhr.setRequestHeader('Content-Type', 'application/json');
         xhr.setRequestHeader('x-passwd', this.password);
         xhr.send(JSON.stringify({ 'sid': sid, 'key': key, 'bucketDelete': bucketDelete }));
         xhr.onload = () => {
-          if (xhr.status === 200) {
+          if (xhr.status === 200 && result) {
             try {
               this.login();
             } catch (e) {
