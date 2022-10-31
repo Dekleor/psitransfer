@@ -44,7 +44,7 @@
               td.text-right {{ humanFileSize(sum[sid].size) }}
               td
                 a(:href="baseURI + sid", title="Open bucket", target="_blank")
-                  icon(name="folder-open")
+                  icon.fa-fw(name="download" )
                 |
                 a.text-danger(@click="deleteFile(sid, '', true)", title="Delete bucket")
                   icon(name="trash")
@@ -77,7 +77,7 @@
   import 'vue-awesome/icons/sync-alt';
   import 'vue-awesome/icons/sign-in-alt';
   import 'vue-awesome/icons/key';
-  import 'vue-awesome/icons/folder-open';
+  import 'vue-awesome/icons/download';
   import 'vue-awesome/icons/trash';
 
   export default {
