@@ -33,7 +33,7 @@
         div.share-link
           span.title {{ $root.lang.downloadLink }}:
           |
-          a(:href='shareUrl') {{ shareUrl }}
+          a(:href='shareUrl', target="_blank") {{ shareUrl }}
       .row.overall-process(v-show="state === 'uploading'")
         span.title(v-show='percentUploaded<100') {{ $root.lang.downloadLink }}:
           |
