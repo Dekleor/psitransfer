@@ -184,7 +184,7 @@
           if (xhr.status === 200 && result) {
             try {
               this.login();
-              location.reload;
+              window.location.reload();
             } catch (e) {
               this.error = e.toString();
             }
